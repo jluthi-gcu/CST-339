@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<!-- The layout attribute specifies which layout this page should use. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Charset setting for the document to interpret special characters correctly. -->
+	<meta charset="UTF-8">
+
+	<!-- This meta tag tells Internet Explorer (IE) to display the webpage in edge mode, which is the highest mode available to that IE version. -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- This meta tag makes the webpage look good on all devices and screen resolutions. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Title of the webpage. -->
+	<title>Dashboard</title>
+</head>
+
+<body>
+	<!-- Define a variable 'pageTitle' which can be dynamically used in Thymeleaf templates. -->
+	<th:block th:with="pageTitle='Dashboard'"></th:block>
+
+	<!-- Define a Thymeleaf fragment named 'customHeader' which can be included or replaced in templates. -->
+	<div th:fragment="customHeader">
+		<h1>User Dashboard</h1>
+	</div>
+
+	<!-- Define a Thymeleaf fragment named 'content' which can be included or replaced in templates. -->
+	<div layout:fragment="content">
+		<h1>Welcome to the Dashboard!</h1>
+		<p>Feature coming soon.</p>
+	</div>
+
+</body>
+
+</html>

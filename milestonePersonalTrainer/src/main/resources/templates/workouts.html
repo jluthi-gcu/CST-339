@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- The layout attribute specifies which layout this page should use. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Charset setting for the document to interpret special characters correctly. -->
+	<meta charset="UTF-8">
+
+	<!-- This meta tag tells Internet Explorer (IE) to display the webpage in edge mode, the highest mode available to that IE version. -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- This meta tag ensures proper rendering and touch zooming on mobile and other small screen devices. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- The title of the page, with a Thymeleaf expression to set it dynamically. If "${title}" isn't provided, "Placeholder Title" will be shown. -->
+	<title th:text="${title}">Placeholder Title</title>
+</head>
+
+<body>
+
+	<!-- Define a variable 'pageTitle' which can be dynamically used in Thymeleaf templates. In this case, it is set to 'Workouts'. -->
+	<th:block th:with="pageTitle='Workouts'"></th:block>
+
+	<!-- Custom header for the page, defined as a Thymeleaf fragment named 'customHeader'. -->
+	<div th:fragment="customHeader">
+		<h1>Your Workout Sessions</h1>
+	</div>
+
+	<!-- Main content area of the page, defined as a Thymeleaf fragment named 'content'. -->
+	<div layout:fragment="content">
+
+		<!-- Another custom header, specifically for the workouts section of the page. -->
+		<div th:fragment="workoutsHeader">
+			<h1>Workout Programs</h1>
+		</div>
+
+		<!-- A table to display the list of workout programs. -->
+		<table style="width:50%">
+
+			<!-- Header section of the table to display the titles of each column. -->
+			<thead>
+				<tr>
+					<th style="text-align: center;">Workout Name</th>
+					<th style="text-align: center;">Description</th>
+					<th style="text-align: center;">Duration (min)</th>
+					<th style="text-align: center;">Difficulty</th>
+				</tr>
+			</thead>
+
+			<!-- Body section of the table. -->
+			<tbody>
+				<!-- This row is displayed if there are no workouts available. -->
+				<tr th:if="${workouts.empty}">
+					<td style="text-align: center;" colspan="4">No Workouts Available</td>
+				</tr>
+
+				<!-- Looping through each workout provided in "${workouts}" to display its properties in individual rows. -->
+				<tr th:each="workout : ${workouts}">
+					<td style="text-align: center;">
+						<h5 th:text="${workout.name}">Placeholder Name</h5>
+					</td>
+					<td style="text-align: center;">
+						<h5 th:text="${workout.description}">Placeholder Description</h5>
+					</td>
+					<td style="text-align: center;">
+						<h5 th:text="${workout.duration}">60</h5>
+					</td>
+					<td style="text-align: center;">
+						<h5 th:text="${workout.difficulty}">Intermediate</h5>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>
