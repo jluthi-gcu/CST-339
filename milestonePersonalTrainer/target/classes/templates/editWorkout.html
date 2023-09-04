@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${title}">Edit Workout</title>
+</head>
+
+<body>
+	<th:block th:with="pageTitle='Edit Workout'"></th:block>
+
+	<div th:fragment="customHeader">
+		<h1>Edit Workout Details</h1>
+	</div>
+
+	<div layout:fragment="content">
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+			<form th:action="@{/workouts/edit/{id}(id=${workout.workoutId})}" th:object="${workout}" method="post">
+				<input type="hidden" th:field="*{workoutId}" />
+				<div style="margin-bottom: 20px;">
+					<label for="workoutName" style="display: block; margin-bottom: 8px;">Workout Name:</label>
+					<input type="text" id="workoutName" th:field="*{workoutName}" placeholder="E.g. Cardio Blast"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<span th:if="${#fields.hasErrors('workoutName')}" th:errors="*{workoutName}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDescription" style="display: block; margin-bottom: 8px;">Workout
+						Description:</label>
+					<textarea id="workoutDescription" rows="4" th:field="*{workoutDescription}"
+						placeholder="E.g. A high-intensity cardio workout..."
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+					<span th:if="${#fields.hasErrors('workoutDescription')}" th:errors="*{workoutDescription}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDuration" style="display: block; margin-bottom: 8px;">Workout Duration
+						(mins):</label>
+					<input type="number" id="workoutDuration" th:field="*{workoutDuration}" placeholder="30" min="5"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<span th:if="${#fields.hasErrors('workoutDuration')}" th:errors="*{workoutDuration}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDifficulty" style="display: block; margin-bottom: 8px;">Workout
+						Difficulty:</label>
+					<select id="workoutDifficulty" th:field="*{workoutDifficulty}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<option th:each="difficulty : ${T(com.gcu.model.WorkoutModel.Difficulty).values()}"
+							th:value="${difficulty}" th:text="${difficulty.label}">Difficulty</option>
+					</select>
+				</div>
+
+				<div style="margin-bottom: 20px;">
+					<label for="workoutType" style="display: block; margin-bottom: 8px;">Workout Type:</label>
+					<select id="workoutType" th:field="*{workoutType}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<option th:each="type : ${T(com.gcu.model.WorkoutModel.WorkoutType).values()}"
+							th:value="${type}" th:text="${type.label}">Type</option>
+					</select>
+					<span th:if="${#fields.hasErrors('workoutType')}" th:errors="*{workoutType}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Update Workout"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>
