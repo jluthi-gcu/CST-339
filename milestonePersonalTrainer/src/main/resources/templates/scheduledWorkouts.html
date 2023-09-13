@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${title}">Placeholder Title</title>
+
+	<style>
+		.navy-button {
+			display: inline-block;
+			padding: 10px 15px;
+			border: none;
+			background-color: navy;
+			color: white;
+			cursor: pointer;
+			border-radius: 4px;
+			text-decoration: none;
+			text-align: center;
+		}
+
+		.navy-button:hover,
+		.navy-button:focus,
+		.navy-button:active {
+			text-decoration: none;
+			color: white;
+			background-color: navy;
+		}
+
+		.navy-button:visited {
+			color: white;
+		}
+
+		/* Styling for the table */
+		table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		/* Styling for table headers */
+		th {
+			text-align: center;
+			font-weight: bold;
+			padding: 10px 15px;
+		}
+
+		/* Styling for table data */
+		td {
+			text-align: center;
+			padding: 10px 15px;
+			border-top: 1px solid #e0e0e0;
+		}
+
+		/* Alternate row background colors for better distinction */
+		tbody tr:nth-child(odd) {
+			background-color: #f7f7f7;
+		}
+
+		/* Adjusting column widths */
+		th:nth-child(1),
+		td:nth-child(1) {
+			width: 20%;
+		}
+
+		th:nth-child(2),
+		td:nth-child(2) {
+			width: 50%;
+		}
+
+		th:nth-child(3),
+		td:nth-child(3) {
+			width: 15%;
+		}
+
+		th:nth-child(4),
+		td:nth-child(4) {
+			width: 15%;
+		}
+
+		/* Fire orange button styling */
+		.fire-orange-button {
+			display: inline-block;
+			padding: 5px 10px;
+			border: none;
+			background-color: #FF4500;
+			/* Fire orange color */
+			color: white;
+			cursor: pointer;
+			border-radius: 4px;
+			text-decoration: none;
+			text-align: center;
+			margin-bottom: 3px;
+		}
+
+		.fire-orange-button:hover,
+		.fire-orange-button:focus,
+		.fire-orange-button:active {
+			text-decoration: none;
+			color: white;
+			background-color: #FF6347;
+		}
+
+		.fire-orange-button:visited {
+			color: white;
+		}
+	</style>
+</head>
+
+<body>
+
+	<th:block th:with="pageTitle='Scheduled Workouts'"></th:block>
+
+	<div th:fragment="customHeader">
+		<h1>Your Scheduled Workouts</h1>
+	</div>
+
+	<div layout:fragment="content" style="padding-bottom: 50px;">
+
+		<div th:fragment="workoutsHeader">
+			<h1>Scheduled Workouts</h1>
+		</div>
+
+		<div th:if="${errorMessage}" class="alert alert-danger" style="text-align: center; margin-bottom: 20px;">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+		<div style="margin-bottom: 20px; display: flex; align-items: center; justify-content: center;">
+			<!-- Form Start -->
+			<form th:action="@{/scheduledworkouts/}" method="get">
+				<!-- Label -->
+				<label for="sortOption" style="margin-right: 10px;">Sort by:</label>
+
+				<!-- Dropdown -->
+				<select id="sortOption" name="sortOption"
+					style="padding: 10px; border-radius: 4px; margin-right: 10px; border: 1px solid navy; color: navy;">
+					<option value="workoutName" th:selected="${sortOption == 'workoutName'}">Workout Name</option>
+					<option value="clientName" th:selected="${sortOption == 'clientName'}">Client Name</option>
+					<option value="date" th:selected="${sortOption == 'date'}">Date</option>
+					<option value="startTime" th:selected="${sortOption == 'startTime'}">Start Time</option>
+				</select>
+
+				<!-- Sort Button -->
+				<input type="submit" value="Sort" class="navy-button">
+			</form>
+		</div>
+
+		<!-- Table to display the list of scheduled workouts -->
+		<table style="width:80%; margin-left:auto; margin-right:auto;">
+
+			<thead>
+				<tr>
+					<th style="text-align: center;">Workout Name</th>
+					<th style="text-align: center;">Client Name</th>
+					<th style="text-align: center;">Date</th>
+					<th style="text-align: center;">Start Time</th>
+					<th style="text-align: center;">End Time</th>
+					<th style="text-align: center;">Actions</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr th:if="${scheduledWorkouts.empty}">
+					<td style="text-align: center;" colspan="6">No Scheduled Workouts Available</td>
+				</tr>
+				<tr th:each="schedule : ${scheduledWorkouts}">
+					<td th:text="${schedule.workout.workoutName}"></td>
+					<td th:text="${schedule.client.clientName}"></td>
+					<td th:text="${schedule.scheduleDate}"></td>
+					<td th:text="${schedule.startTime}"></td>
+					<td th:text="${schedule.endTime}"></td>
+					<td>
+						<a href="#" th:href="@{/scheduledworkouts/edit/{id}(id=${schedule.scheduleId})}"
+							class="fire-orange-button">Edit</a>
+						<a href="#" th:href="@{/scheduledworkouts/delete/{id}(id=${schedule.scheduleId})}"
+							class="fire-orange-button"
+							th:onclick="return confirm('Are you sure you want to delete this scheduled workout?');">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+
+		</table>
+
+		<!-- Action button to schedule a new workout. -->
+		<div style="text-align: center; margin-top: 20px;">
+			<a href="#" th:href="@{/scheduledworkouts/create}" class="navy-button">Schedule New Workout</a>
+		</div>
+	</div>
+
+</body>
+
+</html>
