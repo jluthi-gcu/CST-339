@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!-- Root element with necessary namespaces for Thymeleaf and layout decorators. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Set the document's character encoding to UTF-8 for proper interpretation of special characters. -->
+	<meta charset="UTF-8">
+
+	<!-- Ensures the page is displayed in edge mode for Internet Explorer (highest mode available to the version). -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- Ensures the page is rendered properly on mobile and other small screen devices. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Title of the page. It's dynamically set using Thymeleaf, with a fallback to "Placeholder Title". -->
+	<title th:text="${title}">Placeholder Title</title>
+
+	<script>
+		function updateEndTime() {
+			let workoutDropdown = document.getElementById("workoutId");
+			let selectedWorkout = workoutDropdown.options[workoutDropdown.selectedIndex];
+			let workoutDuration = selectedWorkout.getAttribute("data-duration");
+
+			let durationInMilliseconds = workoutDuration * 60 * 1000;
+
+			let startTimeInput = document.getElementById("startTime");
+			let endTimeInput = document.getElementById("endTime");
+
+			if (startTimeInput.value) {
+				let startTime = new Date(`1970-01-01T${startTimeInput.value}:00`);
+				let endTime = new Date(startTime.getTime() + durationInMilliseconds);
+
+				let endHour = String(endTime.getHours()).padStart(2, '0');
+				let endMinute = String(endTime.getMinutes()).padStart(2, '0');
+
+				endTimeInput.value = `${endHour}:${endMinute}`;
+			} else {
+				endTimeInput.value = "";
+			}
+		}
+	</script>
+</head>
+
+<body>
+
+	<th:block th:with="pageTitle='Create Scheduled Workout'"></th:block>
+
+	<!-- A custom header for the Create Workout page. -->
+	<div th:fragment="customHeader">
+		<h1>Schedule a Workout</h1>
+	</div>
+
+	<div layout:fragment="content">
+		<!-- Displaying the error message if it exists -->
+		<div th:if="${errorMessage}" class="alert alert-danger" style="text-align: center; margin-bottom: 20px;">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+		<!-- Form to Schedule a Workout -->
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+			<form th:action="@{/scheduledworkouts/create}" method="post" style="max-width: 600px; margin: 0 auto;">
+
+				<!-- Dropdown for selecting a workout -->
+				<div class="form-group">
+					<label for="workoutId">Workout:</label>
+					<select id="workoutId" name="workout.workoutId" class="form-control" onchange="updateEndTime()">
+						<option th:each="workout : ${availableWorkouts}" th:value="${workout.workoutId}"
+							th:text="${workout.workoutName}" th:data-duration="${workout.workoutDuration}">
+						</option>
+					</select>
+				</div>
+
+				<!-- Dropdown for selecting a client -->
+				<div class="form-group">
+					<label for="clientId">Client:</label>
+					<select id="clientId" name="client.clientId" class="form-control">
+						<option th:each="client : ${availableClients}" th:value="${client.clientId}"
+							th:text="${client.clientName}">
+						</option>
+					</select>
+				</div>
+
+				<!-- Input for selecting a date -->
+				<div class="form-group">
+					<label for="scheduleDate">Date:</label>
+					<input type="date" id="scheduleDate" name="scheduleDate" class="form-control" required>
+				</div>
+
+				<!-- Input for selecting start time -->
+				<div class="form-group">
+					<label for="startTime">Start Time:</label>
+					<input type="time" id="startTime" name="startTime" class="form-control" required
+						onchange="updateEndTime()">
+				</div>
+
+				<!-- Input for selecting end time -->
+				<div class="form-group">
+					<label for="endTime">End Time:</label>
+					<input type="time" id="endTime" name="endTime" class="form-control" required readonly>
+				</div>
+
+				<!-- Submit button for the form. -->
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Schedule Workout"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+</body>
+
+</html>

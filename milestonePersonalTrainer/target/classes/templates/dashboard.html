@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title th:text="${title}">Dashboard</title>
+
+	<style>
+		/* Fire-orange and navy colors for emphasis */
+		.fire-orange-text {
+			color: #FF4500;
+			/* Fire orange color */
+		}
+
+		.navy-text {
+			color: navy;
+		}
+
+		ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		/* Fire-orange and navy colors for emphasis */
+		.fire-orange-text {
+			color: #FF4500;
+			/* Fire orange color */
+		}
+
+		.navy-text {
+			color: navy;
+		}
+
+		ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		li:not(.navbar li) {
+			padding: 8px 0;
+			border-bottom: 1px solid #f3f3f3;
+			/* subtle divider between list items */
+		}
+
+
+		li:last-child {
+			border-bottom: none;
+		}
+
+		small {
+			color: #777;
+			font-weight: 300;
+		}
+	</style>
+</head>
+
+<body>
+	<th:block th:with="pageTitle='Dashboard'"></th:block>
+
+	<div th:fragment="customHeader">
+		<h1>Personal Trainer Workout App (Admin Site)</h1>
+	</div>
+
+	<div layout:fragment="content" style="max-width: 800px; margin: 0 auto; padding: 20px;">
+
+		<div th:fragment="workoutsHeader">
+			<h1 style="font-size: 2.8em;">Welcome to the Dashboard!</h1>
+		</div>
+
+
+		<!-- Display the recent workouts -->
+		<section style="margin-bottom: 40px;">
+			<h2 class="navy-text">Recent Workouts</h2>
+			<ul>
+				<li th:each="workout : ${recentWorkouts}">
+					<span th:text="${workout.workoutName}"></span>
+				</li>
+			</ul>
+		</section>
+
+		<!-- Display the recent clients -->
+		<section style="margin-bottom: 40px;">
+			<h2 class="navy-text">Recent Clients</h2>
+			<ul>
+				<li th:each="client : ${recentClients}">
+					<span th:text="${client.clientName}"></span>
+					<br>
+					<small th:text="${client.clientEmail}"></small>
+				</li>
+			</ul>
+		</section>
+
+		<!-- Display the upcoming scheduled workouts -->
+		<section>
+			<h2 class="navy-text">Upcoming Scheduled Workouts</h2>
+			<ul>
+				<li th:each="scheduled : ${upcomingScheduledWorkouts}">
+					Workout Name: <span th:text="${scheduled.workout.workoutName}" class="fire-orange-text"></span>
+					<br>
+					Client: <span th:text="${scheduled.client.clientName}" class="navy-text"></span>
+					<br>
+					Date: <span th:text="${scheduled.scheduleDate}"></span>
+				</li>
+			</ul>
+		</section>
+	</div>
+</body>
+
+</html>
