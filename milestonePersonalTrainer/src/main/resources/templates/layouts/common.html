@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+
+<head>
+	<!-- Define character encoding and other meta details -->
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+	<!-- Define page title dynamically, defaulting to "Placeholder Title" -->
+	<title th:text="${title}">Placeholder Title</title>
+
+</head>
+
+<body>
+	<!-- Header section, which can be dynamically customized -->
+	<div th:fragment="header(title, customHeaderContent)">
+		<div align="center">
+
+			<!-- Default header text that displays when no custom header content is given -->
+			<h1 th:unless="${customHeaderContent}">Welcome to the Personal Trainer Workout App</h1>
+
+			<!-- If custom header content is provided, it replaces the default header text -->
+			<div th:if="${customHeaderContent}" th:replace="${customHeaderContent}">Your custom header will appear here
+			</div>
+		</div>
+
+		<!-- Navigation bar section -->
+		<div class="bs-example">
+			<nav class="navbar navbar-default">
+				<!-- Branding and responsive toggle button for smaller screens -->
+				<div class="navbar-header">
+					<button type="button" data-target="#navbarCollapse" data-toggle="collapse" class="navbar-toggle">
+						<!-- Accessibility text for screen readers -->
+						<span class="sr-only">Toggle Navigation</span>
+						<!-- Icon bars for the toggle button -->
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<!-- Brand name for the application -->
+					<a href="#" class="navbar-brand"
+						style="background-image: linear-gradient(to right, #FF4500, #001F3F); color: transparent; background-clip: text; -webkit-background-clip: text;">PT
+						App</a>
+
+				</div>
+
+				<!-- Navigation links, which get collapsed on smaller screens -->
+				<div id="navbarCollapse" class="collapse navbar-collapse">
+					<!-- Main navigation links -->
+					<ul class="nav navbar-nav">
+						<li><a href="/dashboard/">Dashboard</a></li>
+						<li><a href="/scheduledworkouts/">Scheduled Workouts</a></li>
+						<li><a href="/workouts/">Workouts</a></li>
+						<li><a href="/clients/">Clients</a></li>
+
+					</ul>
+					<!-- Right-aligned navigation links for user authentication actions -->
+					<ul class="nav navbar-nav navbar-right">
+						<li th:if="${#authentication.name == 'anonymousUser'}"><a href="/login/">Login</a></li>
+						<li th:if="${#authentication.name == 'anonymousUser'}"><a href="/register/">Register</a></li>
+						<li class="navbar-logout-form" th:if="${#authentication.name != 'anonymousUser'}">
+							<form th:action="@{/logout}" method="post" style="display: inline;">
+								<button type="submit" class="btn btn-link nav-link"
+									style="background: none; border: none; padding: 10px 15px; color: inherit; font: inherit; cursor: pointer;">Logout</button>
+
+							</form>
+						</li>
+
+
+					</ul>
+
+				</div>
+			</nav>
+		</div>
+
+		<!-- Display the page title dynamically, defaulting to "Default Message Text" -->
+		<h2 th:text="${title}">Default Message Text</h2><br />
+
+		<!-- Display the Personal Trainer logo -->
+		<img class="logo" th:src="@{/images/personalTrainerLogo.jpg}" alt="Personal Trainer Logo" width="300"
+			height="250" />
+	</div>
+
+	<!-- Footer section with copyright notice -->
+	<div th:fragment="footer">
+		<h5 style="color: navy; text-align: center; position: fixed; bottom: 0; width: 75%;">Copyright 2023 Personal
+			Trainer Workout App</h5>
+	</div>
+
+</body>
+
+</html>

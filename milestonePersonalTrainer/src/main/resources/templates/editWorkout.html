@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<!-- Root element with necessary namespaces for Thymeleaf and layout decorators. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Metadata for character set -->
+	<meta charset="UTF-8">
+	<!-- Ensures correct display in Internet Explorer -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Setting viewport for responsive design -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- Dynamic title for the page, defaults to "Edit Workout" -->
+	<title th:text="${title}">Edit Workout</title>
+</head>
+
+<body>
+	<!-- Set a dynamic page title using Thymeleaf -->
+	<th:block th:with="pageTitle='Edit Workout'"></th:block>
+
+	<!-- Header section for the edit page -->
+	<div th:fragment="customHeader">
+		<h1>Edit Workout Details</h1>
+	</div>
+
+	<!-- Main content of the page inside a styled container -->
+	<div layout:fragment="content">
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+
+			<!-- Form to edit the workout details with Thymeleaf action and object bindings -->
+			<form th:action="@{/workouts/edit/{id}(id=${workout.workoutId})}" th:object="${workout}" method="post">
+
+				<!-- Hidden input to capture and send the workout's ID -->
+				<input type="hidden" th:field="*{workoutId}" />
+
+				<!-- Input field for the workout's name along with error display area -->
+				<div style="margin-bottom: 20px;">
+					<label for="workoutName" style="display: block; margin-bottom: 8px;">Workout Name:</label>
+					<input type="text" id="workoutName" th:field="*{workoutName}" placeholder="E.g. Cardio Blast"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<span th:if="${#fields.hasErrors('workoutName')}" th:errors="*{workoutName}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Textarea for capturing the workout's description along with error display area -->
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDescription" style="display: block; margin-bottom: 8px;">Workout
+						Description:</label>
+					<textarea id="workoutDescription" rows="4" th:field="*{workoutDescription}"
+						placeholder="E.g. A high-intensity cardio workout..."
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+					<span th:if="${#fields.hasErrors('workoutDescription')}" th:errors="*{workoutDescription}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Input field for the workout's duration along with error display area -->
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDuration" style="display: block; margin-bottom: 8px;">Workout Duration
+						(mins):</label>
+					<input type="number" id="workoutDuration" th:field="*{workoutDuration}" placeholder="30" min="5"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<span th:if="${#fields.hasErrors('workoutDuration')}" th:errors="*{workoutDuration}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Dropdown to select the workout's difficulty level -->
+				<div style="margin-bottom: 20px;">
+					<label for="workoutDifficulty" style="display: block; margin-bottom: 8px;">Workout
+						Difficulty:</label>
+					<select id="workoutDifficulty" th:field="*{workoutDifficulty}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<!-- Dynamically populating dropdown options with Thymeleaf from an Enum -->
+						<option th:each="difficulty : ${T(com.gcu.model.WorkoutModel.Difficulty).values()}"
+							th:value="${difficulty}" th:text="${difficulty.label}">Difficulty</option>
+					</select>
+				</div>
+
+				<!-- Dropdown to select the type of workout -->
+				<div style="margin-bottom: 20px;">
+					<label for="workoutType" style="display: block; margin-bottom: 8px;">Workout Type:</label>
+					<select id="workoutType" th:field="*{workoutType}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<!-- Dynamically populating dropdown options with Thymeleaf from another Enum -->
+						<option th:each="type : ${T(com.gcu.model.WorkoutModel.WorkoutType).values()}"
+							th:value="${type}" th:text="${type.label}">Type</option>
+					</select>
+					<span th:if="${#fields.hasErrors('workoutType')}" th:errors="*{workoutType}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Submit button to finalize the edits -->
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Update Workout"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

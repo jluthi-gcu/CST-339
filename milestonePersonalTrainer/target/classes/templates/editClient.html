@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<!-- Root element with necessary namespaces for Thymeleaf and layout decorators. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Character set for the document -->
+	<meta charset="UTF-8">
+	<!-- Ensuring correct display in Internet Explorer -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Setting viewport for responsive design -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Dynamic title for the page, defaults to "Edit Client" -->
+	<title th:text="${title}">Edit Client</title>
+</head>
+
+<body>
+	<!-- Setting the page title variable -->
+	<th:block th:with="pageTitle='Edit Client'"></th:block>
+
+	<!-- Header section for editing client details -->
+	<div th:fragment="customHeader">
+		<h1>Edit Client Details</h1>
+	</div>
+
+	<!-- Main content wrapper -->
+	<div layout:fragment="content">
+		<!-- Styled container for the edit form -->
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+			<!-- Form to submit client edits, populates with the client data -->
+			<form th:action="@{/clients/edit/{id}(id=${client.clientId})}" th:object="${client}" method="post">
+
+				<!-- Hidden input to store the client's ID -->
+				<input type="hidden" th:field="*{clientId}" />
+
+				<!-- Client name input section -->
+				<div style="margin-bottom: 20px;">
+					<label for="clientName" style="display: block; margin-bottom: 8px;">Client Name:</label>
+					<input type="text" id="clientName" th:field="*{clientName}" placeholder="E.g. John Doe"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<!-- Display errors related to client name if any -->
+					<span th:if="${#fields.hasErrors('clientName')}" th:errors="*{clientName}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Client email input section -->
+				<div style="margin-bottom: 20px;">
+					<label for="email" style="display: block; margin-bottom: 8px;">Email:</label>
+					<input type="email" id="clientEmail" th:field="*{clientEmail}"
+						placeholder="E.g. johndoe@example.com"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+					<!-- Display errors related to client email if any -->
+					<span th:if="${#fields.hasErrors('clientEmail')}" th:errors="*{clientEmail}"
+						style="display: block; color: red; margin-top: 5px;"></span>
+				</div>
+
+				<!-- Submit button to update client details -->
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Update Client"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

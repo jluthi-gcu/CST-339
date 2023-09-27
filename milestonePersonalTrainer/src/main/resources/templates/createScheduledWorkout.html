@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!-- Root element with necessary namespaces for Thymeleaf and layout decorators. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Set the document's character encoding to UTF-8, ensuring proper interpretation of special characters. -->
+	<meta charset="UTF-8">
+
+	<!-- Edge mode for Internet Explorer compatibility, to use the highest mode available to the version. -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+	<!-- For responsive design: ensures the page scales and sizes correctly on all devices, especially mobile. -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<!-- The page's title. Dynamically populated with Thymeleaf if a title is provided, else defaults to "Placeholder Title". -->
+	<title th:text="${title}">Placeholder Title</title>
+
+	<!-- JavaScript function to compute and display the end time of a workout based on its duration and the start time. -->
+	<script>
+		function updateEndTime() {
+			// Retrieving the workout dropdown and selected workout's duration.
+			let workoutDropdown = document.getElementById("workoutId");
+			let selectedWorkout = workoutDropdown.options[workoutDropdown.selectedIndex];
+			let workoutDuration = selectedWorkout.getAttribute("data-duration");
+
+			// Converting workout duration from minutes to milliseconds.
+			let durationInMilliseconds = workoutDuration * 60 * 1000;
+
+			// Retrieving the start and end time input fields.
+			let startTimeInput = document.getElementById("startTime");
+			let endTimeInput = document.getElementById("endTime");
+
+			// If a start time is provided, compute the end time based on the workout duration.
+			if (startTimeInput.value) {
+				let startTime = new Date(`1970-01-01T${startTimeInput.value}:00`);
+				let endTime = new Date(startTime.getTime() + durationInMilliseconds);
+
+				let endHour = String(endTime.getHours()).padStart(2, '0');
+				let endMinute = String(endTime.getMinutes()).padStart(2, '0');
+
+				endTimeInput.value = `${endHour}:${endMinute}`;
+			} else {
+				// If no start time is provided, clear the end time field.
+				endTimeInput.value = "";
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<!-- Temporary Thymeleaf block to set the pageTitle variable. -->
+	<th:block th:with="pageTitle='Create Scheduled Workout'"></th:block>
+
+	<!-- A custom header for the Create Workout page. -->
+	<div th:fragment="customHeader">
+		<h1>Schedule a Workout</h1>
+	</div>
+
+	<!-- The main content of the page. -->
+	<div layout:fragment="content">
+		<!-- A block that displays an error message if one is provided. -->
+		<div th:if="${errorMessage}" class="alert alert-danger" style="text-align: center; margin-bottom: 20px;">
+			<p th:text="${errorMessage}"></p>
+		</div>
+
+		<!-- The form where users can schedule a workout. It's styled for better visual appeal. -->
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+			<!-- Form action targets the creation of scheduled workouts and uses the POST method. -->
+			<form th:action="@{/scheduledworkouts/create}" method="post" style="max-width: 600px; margin: 0 auto;">
+
+				<!-- Dropdown for users to select a workout from available options. -->
+				<div class="form-group">
+					<label for="workoutId">Workout:</label>
+					<select id="workoutId" name="workout.workoutId" class="form-control" onchange="updateEndTime()">
+						<!-- Loop through each available workout and create an option in the dropdown. -->
+						<option th:each="workout : ${availableWorkouts}" th:value="${workout.workoutId}"
+							th:text="${workout.workoutName}" th:data-duration="${workout.workoutDuration}">
+						</option>
+					</select>
+				</div>
+
+				<!-- Dropdown for users to select a client from available options. -->
+				<div class="form-group">
+					<label for="clientId">Client:</label>
+					<select id="clientId" name="client.clientId" class="form-control">
+						<!-- Loop through each available client and create an option in the dropdown. -->
+						<option th:each="client : ${availableClients}" th:value="${client.clientId}"
+							th:text="${client.clientName}">
+						</option>
+					</select>
+				</div>
+
+				<!-- Input field for users to select a date for the workout. -->
+				<div class="form-group">
+					<label for="scheduleDate">Date:</label>
+					<input type="date" id="scheduleDate" name="scheduleDate" class="form-control" required>
+				</div>
+
+				<!-- Input field for users to select a start time for the workout. -->
+				<div class="form-group">
+					<label for="startTime">Start Time:</label>
+					<input type="time" id="startTime" name="startTime" class="form-control" required
+						onchange="updateEndTime()">
+				</div>
+
+				<!-- Read-only input field displaying the computed end time of the workout. -->
+				<div class="form-group">
+					<label for="endTime">End Time:</label>
+					<input type="time" id="endTime" name="endTime" class="form-control" required readonly>
+				</div>
+
+				<!-- The button users click to submit the form and schedule the workout. -->
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Schedule Workout"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>

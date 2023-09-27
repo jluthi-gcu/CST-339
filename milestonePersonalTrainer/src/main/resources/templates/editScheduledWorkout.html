@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<!-- Root element with necessary namespaces for Thymeleaf and layout decorators. -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/defaultTemplate}">
+
+<head>
+	<!-- Character set for the document -->
+	<meta charset="UTF-8">
+	<!-- Ensuring correct display in Internet Explorer -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<!-- Setting viewport for responsive design -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Dynamic title for the page, defaults to "Edit Scheduled Workout" -->
+	<title th:text="${title}">Edit Scheduled Workout</title>
+
+	<!-- Inline script to compute the end time based on selected workout duration and start time -->
+	<script>
+		function updateEndTime() {
+			// Get the selected workout's duration from the dropdown
+			let workoutDropdown = document.getElementById("workoutId");
+			let selectedWorkout = workoutDropdown.options[workoutDropdown.selectedIndex];
+			let workoutDuration = selectedWorkout.getAttribute("data-duration");
+
+			// Convert the duration from minutes to milliseconds
+			let durationInMilliseconds = workoutDuration * 60 * 1000;
+
+			let startTimeInput = document.getElementById("startTime");
+			let endTimeInput = document.getElementById("endTime");
+
+			// Calculate the end time based on the start time and workout duration
+			if (startTimeInput.value) {
+				let startTime = new Date(`1970-01-01T${startTimeInput.value}:00`);
+				let endTime = new Date(startTime.getTime() + durationInMilliseconds);
+
+				let endHour = String(endTime.getHours()).padStart(2, '0');
+				let endMinute = String(endTime.getMinutes()).padStart(2, '0');
+
+				// Update the end time input field with the computed value
+				endTimeInput.value = `${endHour}:${endMinute}`;
+			} else {
+				endTimeInput.value = "";
+			}
+		}
+	</script>
+</head>
+
+<body>
+	<!-- Set a dynamic page title using Thymeleaf -->
+	<th:block th:with="pageTitle='Edit Scheduled Workout'"></th:block>
+
+	<!-- Header section for the edit page -->
+	<div th:fragment="customHeader">
+		<h1>Edit Scheduled Workout Details</h1>
+	</div>
+
+	<!-- Main content wrapper for the form -->
+	<div layout:fragment="content">
+		<!-- Styled container for the edit form -->
+		<div
+			style="max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background-color: #f9f9f9;">
+
+			<!-- Form to update scheduled workout details -->
+			<form th:action="@{/scheduledworkouts/edit/{id}(id=${scheduledWorkout.scheduleId})}"
+				th:object="${scheduledWorkout}" method="post">
+
+				<!-- Hidden input to store the schedule ID -->
+				<input type="hidden" th:field="*{scheduleId}" />
+
+				<!-- Dropdown to select a workout, with onchange event to update the end time -->
+				<div style="margin-bottom: 20px;">
+					<label for="workout" style="display: block; margin-bottom: 8px;">Workout:</label>
+					<select id="workoutId" th:field="*{workout.workoutId}" onchange="updateEndTime()"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<option th:each="workout : ${availableWorkouts}" th:value="${workout.workoutId}"
+							th:text="${workout.workoutName}" th:data-duration="${workout.workoutDuration}">Workout Name
+						</option>
+					</select>
+				</div>
+
+				<!-- Dropdown to select a client -->
+				<div style="margin-bottom: 20px;">
+					<label for="client" style="display: block; margin-bottom: 8px;">Client:</label>
+					<select id="client" th:field="*{client.clientId}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;">
+						<option th:each="client : ${availableClients}" th:value="${client.clientId}"
+							th:text="${client.clientName}">Client Name</option>
+					</select>
+				</div>
+
+				<!-- Input field to set the scheduled date of the workout -->
+				<div style="margin-bottom: 20px;">
+					<label for="scheduleDate" style="display: block; margin-bottom: 8px;">Schedule Date:</label>
+					<input type="date" id="scheduleDate" th:field="*{scheduleDate}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+				</div>
+
+				<!-- Input field to set the start time of the workout, with onchange event to update the end time -->
+				<div style="margin-bottom: 20px;">
+					<label for="startTime" style="display: block; margin-bottom: 8px;">Start Time:</label>
+					<input type="time" id="startTime" th:field="*{startTime}" onchange="updateEndTime()"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" required>
+				</div>
+
+				<!-- Read-only input field to display the calculated end time of the workout -->
+				<div style="margin-bottom: 20px;">
+					<label for="endTime" style="display: block; margin-bottom: 8px;">End Time:</label>
+					<input type="time" id="endTime" th:field="*{endTime}"
+						style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" readonly>
+				</div>
+
+				<!-- Submit button to save the edited details -->
+				<div style="text-align: center; margin-top: 20px;">
+					<input type="submit" value="Update Scheduled Workout"
+						style="padding: 10px 15px; border: none; background-color: navy; color: white; cursor: pointer; border-radius: 4px;">
+				</div>
+			</form>
+		</div>
+	</div>
+</body>
+
+</html>
